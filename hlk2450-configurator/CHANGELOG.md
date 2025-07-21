@@ -1,51 +1,47 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the HLK2450 mmWave Sensor Configurator add-on will be documented in this file.
 
-## [1.0.0] - 2025-01-21
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.1] - 2025-01-21
+
+### Fixed
+- Fixed production build error where Vite was being imported in production environment
+- Created separate production entry point (index.production.ts) to exclude development dependencies
+- Updated build process to use production-specific entry point
+- Fixed Docker container startup errors related to missing Vite package
+
+### Changed
+- Repository owner updated from 'wifispray' to 'nmcrae85' in all configuration files
+- Updated GitHub Actions workflow to use Personal Access Token (CR_PAT) for authentication
+- Improved WebSocket error handling to reduce connection spam in logs
+
+### Added
+- Created dedicated logger module for consistent logging across environments
+- Added production-specific server configuration without development dependencies
+
+## [1.0.0] - 2025-01-20
 
 ### Added
 - Initial release of HLK2450 mmWave Sensor Configurator
-- Real-time sensor visualization with interactive canvas
-- Polygon zone creation and editing capabilities
-- WebSocket-based live sensor communication
-- Comprehensive sensor statistics and performance monitoring
-- ESPHome YAML export (basic and advanced modes)
-- Dark theme optimized interface
+- Real-time sensor visualization with WebSocket support
+- Interactive polygon zone creation and management
+- ESPHome YAML export functionality (basic and advanced modes)
+- Statistics dashboard for performance monitoring
+- Multi-architecture Docker support (armv7, arm64, amd64)
 - Home Assistant add-on integration
-- Support for HLK-LD2450 sensor with 256000 baud rate
-- Multi-target tracking (up to 3 targets)
-- Zone validation and area calculation
-- Preset configuration management
-- Calibration and factory reset functions
+- React 18 frontend with TypeScript
+- Express.js backend with WebSocket support
+- PostgreSQL database with Drizzle ORM (in-memory fallback)
+- Tailwind CSS with shadcn/ui components
 
 ### Features
-- **Sensor Canvas**: Interactive visualization of detection zones and live targets
-- **Zone Management**: Create, edit, and delete detection and filter zones
-- **Real-time Data**: Live target tracking with position, speed, and distance
-- **Statistics Dashboard**: Performance metrics and connection monitoring
-- **Configuration Export**: Generate ESPHome YAML for Home Assistant integration
-- **Responsive Design**: Optimized for desktop and mobile devices
-- **WebSocket API**: Real-time bidirectional communication with sensors
-
-### Technical
-- Built with React 18 and TypeScript
-- Express.js backend with WebSocket server
-- Tailwind CSS with shadcn/ui components
-- Drizzle ORM with PostgreSQL support
-- In-memory storage fallback for development
-- Vite build system with hot module replacement
-- TanStack Query for state management
-
-### Supported Architectures
-- amd64
-- aarch64
-- armv7
-- armhf
-- i386
-
-### Requirements
-- Home Assistant 2023.1 or newer
-- ESP32 with ESPHome
-- HLK-LD2450 mmWave sensor
-- Network connectivity for WebSocket communication
+- Live sensor data visualization
+- Dynamic zone configuration with polygon drawing
+- Preset room configurations
+- Export to ESPHome-compatible YAML format
+- Real-time WebSocket communication
+- Responsive web interface
+- Dark mode support
