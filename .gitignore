@@ -80,6 +80,11 @@ jspm_packages/
 # Replit specific
 .replit
 replit.nix
+.upm/
+.local/
+.config/
+.replit_history
+.nix_shell_dump
 
 # Database
 *.sqlite

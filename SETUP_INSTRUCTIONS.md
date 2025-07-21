@@ -41,6 +41,7 @@ nmcrae85/HLKSense360Configurator/
 
 2. **Move all app files into it:**
    ```bash
+   # Move visible files
    git mv config.yaml hlk2450-configurator/
    git mv Dockerfile hlk2450-configurator/
    git mv build.yaml hlk2450-configurator/
@@ -54,20 +55,25 @@ nmcrae85/HLKSense360Configurator/
    git mv server/ hlk2450-configurator/
    git mv shared/ hlk2450-configurator/
    git mv scripts/ hlk2450-configurator/
+   
+   # Also move any hidden files (like .eslintrc if you have one)
+   git mv .replit hlk2450-configurator/ 2>/dev/null || true
    ```
 
 3. **Keep only these at root:**
    - README.md (repository overview)
    - repository.yaml (already updated)
    - LICENSE
-   - .github/ (workflows)
+   - .github/ (workflows) ← **KEEP THIS AT ROOT**
+   - .gitignore ← **KEEP THIS AT ROOT**
 
-4. **Update GitHub Actions workflow:**
-   Edit `.github/workflows/build.yml` to build from the subdirectory:
-   ```yaml
-   - name: Build add-on
-     run: cd hlk2450-configurator && docker build ...
-   ```
+4. **The .github folder MUST stay at root!**
+   The `.github` folder needs to remain at the repository root for GitHub Actions to work properly. It's already configured correctly to look for files in the `hlk2450-configurator` subdirectory.
+
+5. **Your GitHub Actions workflow is already set up correctly:**
+   - It's looking for changes in `hlk2450-configurator/**`
+   - It builds from `context: ./hlk2450-configurator`
+   - No changes needed to the workflow!
 
 ### 3. Why This Structure is Required
 
