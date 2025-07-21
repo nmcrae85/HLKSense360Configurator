@@ -10,7 +10,7 @@ codenotary:
 labels:
   org.opencontainers.image.title: "HLK2450 mmWave Sensor Configurator"
   org.opencontainers.image.description: "Advanced ESPHome add-on for HLK2450 mmWave sensor configuration with real-time visualization and polygon zone creation"
-  org.opencontainers.image.source: "https://github.com/[YOUR_USERNAME]/hlk2450-configurator"
+  org.opencontainers.image.source: "https://github.com/wifispray/HLKSense360Configurator"
   org.opencontainers.image.licenses: "MIT"
 args:
   TEMPIO_VERSION: "2023.01.0"

@@ -1,8 +1,8 @@
-# replit.md
+# HLK2450 mmWave Sensor Configurator
 
 ## Overview
 
-This is a sophisticated React-based mmWave sensor configuration application built with a modern full-stack architecture. The system provides a visual interface for configuring and monitoring HLK2450 mmWave presence sensors, featuring real-time data visualization, zone configuration, and ESPHome YAML generation capabilities.
+This is a comprehensive Home Assistant add-on for configuring and managing HLK-LD2450 mmWave presence sensors. The application provides a sophisticated web interface with real-time sensor visualization, polygon zone creation, and ESPHome integration capabilities. Built as part of the Sense360 project, it offers advanced features beyond standard sensor configuration tools.
 
 ## User Preferences
 
@@ -10,106 +10,96 @@ Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-The application follows a monorepo structure with clear separation between client, server, and shared components:
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript for type safety and modern React features
+- **Build System**: Vite for fast development and optimized production builds
+- **UI Framework**: Tailwind CSS with shadcn/ui component library for consistent, modern design
+- **State Management**: TanStack Query for server state management and caching
+- **Routing**: Wouter for lightweight client-side routing
+- **Canvas Rendering**: HTML5 Canvas for real-time sensor visualization and zone drawing
 
-- **Frontend**: React 18 with TypeScript, using Vite for development and building
-- **Backend**: Express.js server with WebSocket support for real-time communication
-- **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
-- **Styling**: Tailwind CSS with shadcn/ui component library
-- **State Management**: TanStack Query for server state management
-- **Real-time Communication**: WebSocket connections for live sensor data
+### Backend Architecture
+- **Runtime**: Node.js with Express.js framework
+- **Language**: TypeScript for full-stack type safety
+- **Real-time Communication**: WebSocket server for live sensor data streaming
+- **API Design**: RESTful endpoints with WebSocket enhancement for real-time features
+- **Development Integration**: Vite middleware integration for seamless development experience
+
+### Database and Storage
+- **Primary Database**: PostgreSQL with Drizzle ORM for type-safe database operations
+- **Development Fallback**: In-memory storage implementation for development without database setup
+- **Schema Management**: Drizzle Kit for database migrations and schema management
+- **Session Storage**: PostgreSQL-backed session storage using connect-pg-simple
 
 ## Key Components
 
-### Frontend Architecture
-- **Component Library**: Built on shadcn/ui with Radix UI primitives
-- **Routing**: Wouter for lightweight client-side routing
-- **Styling**: Tailwind CSS with CSS variables for theming
-- **Canvas Rendering**: Custom HTML5 Canvas implementation for sensor visualization
-- **Form Handling**: React Hook Form with Zod validation
+### Real-time Sensor Communication
+- WebSocket server handles live sensor data streaming at 10Hz update rate
+- Simulation service provides development-time sensor data for testing
+- Multi-device support with device-specific data filtering
+- Connection status monitoring and automatic reconnection handling
 
-### Backend Architecture
-- **API Layer**: RESTful endpoints with Express.js
-- **Real-time Layer**: WebSocket server for live sensor communication
-- **Data Storage**: Drizzle ORM with PostgreSQL for persistent storage
-- **In-memory Storage**: Fallback storage implementation for development
-- **Service Layer**: Modular services for sensor communication and YAML generation
+### Interactive Canvas System
+- Real-time target visualization with position, speed, and distance tracking
+- Interactive polygon zone creation and editing with precision controls
+- Coordinate system conversion between screen and sensor coordinates
+- Zone validation with area calculation and overlap detection
+- Support for detection and filter zones with visual differentiation
 
-### Database Schema
-- **Sensor Configurations**: Device settings, zones, and sensor parameters
-- **Sensor Data**: Real-time target tracking and presence detection data
-- **Preset Configurations**: Pre-defined sensor configurations for different room types
+### Configuration Management
+- Comprehensive sensor parameter configuration (baud rate, sensitivity, timeouts)
+- Preset configuration system for common room types and use cases
+- Zone management with create, edit, delete, and validation capabilities
+- Import/export functionality for configuration backup and sharing
+
+### ESPHome Integration
+- YAML configuration generator for both basic and advanced ESPHome setups
+- Home Assistant entity creation with proper device classes and attributes
+- Multi-target tracking support with individual entity creation
+- Zone-based binary sensors for presence detection
 
 ## Data Flow
 
-1. **Sensor Communication**: WebSocket connection establishes real-time bidirectional communication
-2. **Data Processing**: Incoming sensor data is processed and stored in the database
-3. **Real-time Updates**: Processed data is broadcast to connected clients via WebSocket
-4. **Configuration Management**: Settings are persisted to database and applied to sensors
-5. **YAML Generation**: Sensor configurations are converted to ESPHome-compatible YAML
+1. **Sensor Data Ingestion**: Real sensor data flows through UART to ESP32, then via WiFi to the web interface
+2. **WebSocket Communication**: Live data streams to connected web clients for real-time visualization
+3. **Configuration Updates**: User configuration changes are validated, stored, and can be exported to ESPHome YAML
+4. **Zone Processing**: Interactive zone creation updates are validated and stored with geometric calculations
+5. **Statistics Aggregation**: Real-time performance metrics are calculated and displayed for monitoring
 
 ## External Dependencies
 
-### Core Framework Dependencies
-- **@neondatabase/serverless**: PostgreSQL database connectivity
-- **drizzle-orm**: Type-safe database ORM
-- **@tanstack/react-query**: Server state management
-- **ws**: WebSocket implementation for real-time communication
-
-### UI Component Dependencies
-- **@radix-ui/***: Accessible UI component primitives
-- **tailwindcss**: Utility-first CSS framework
-- **lucide-react**: Icon library
-- **react-hook-form**: Form handling and validation
+### Core Dependencies
+- **React Ecosystem**: React 18, React DOM, React Query for frontend functionality
+- **UI Components**: Radix UI primitives, Lucide React icons, class-variance-authority for styling
+- **Backend**: Express.js, WebSocket (ws), Drizzle ORM for database operations
+- **Database**: PostgreSQL via @neondatabase/serverless with connection pooling
+- **Validation**: Zod for runtime type validation and schema definition
 
 ### Development Dependencies
-- **vite**: Development server and build tool
-- **typescript**: Type checking and compilation
-- **eslint**: Code linting and formatting
+- **Build Tools**: Vite, esbuild, TypeScript compiler
+- **Code Quality**: ESLint, Prettier (implied by project structure)
+- **Replit Integration**: Replit-specific plugins for development environment integration
+
+### Home Assistant Integration
+- **Add-on Framework**: Compatible with Home Assistant supervisor architecture
+- **Multi-architecture Support**: Docker images for amd64, aarch64, armv7, armhf, i386
+- **ESPHome Integration**: Generates compatible YAML configurations for seamless integration
 
 ## Deployment Strategy
 
-The application is configured for deployment on Replit with the following setup:
+### Container Architecture
+- **Multi-stage Docker Build**: Separate build and runtime stages for optimal image size
+- **Architecture Support**: Multi-platform builds supporting ARM and x86 architectures
+- **Home Assistant Add-on**: Packaged as Home Assistant Supervisor add-on with proper metadata
 
-1. **Development Mode**: Vite dev server with hot module replacement
-2. **Production Build**: Static assets built to `dist/public` directory
-3. **Server Compilation**: ESBuild bundles server code to `dist/index.js`
-4. **Database Integration**: Configured for PostgreSQL with environment-based connection
-5. **WebSocket Support**: Real-time communication enabled in both development and production
+### Development Workflow
+- **Hot Reload**: Vite development server with hot module replacement
+- **Type Safety**: Full TypeScript coverage with strict type checking
+- **Database Flexibility**: Automatic fallback to in-memory storage when PostgreSQL unavailable
+- **WebSocket Simulation**: Built-in sensor simulation for development without hardware
 
-The build process creates a production-ready Express server that serves static assets and provides API endpoints with WebSocket support for real-time sensor communication.
-
-### Key Scripts
-- `dev`: Runs development server with TypeScript compilation
-- `build`: Creates production build with both client and server bundles
-- `start`: Runs production server
-- `db:push`: Applies database schema changes using Drizzle
-
-The application is designed to work seamlessly in both development and production environments with automatic fallbacks and environment-specific configurations.
-
-## Recent Changes
-
-### 2025-01-21 - Repository Cleanup and GitHub Preparation
-- ✓ Created complete Home Assistant add-on structure
-- ✓ Added production Dockerfile with Node.js runtime
-- ✓ Created config.yaml for Home Assistant add-on store
-- ✓ Added comprehensive README.md with installation instructions
-- ✓ Implemented .gitignore for clean repository
-- ✓ Added CHANGELOG.md and LICENSE files
-- ✓ Removed development-only files (attached_assets, .replit)
-- ✓ Created build script for production deployment
-- ✓ Fixed TypeScript errors for production readiness
-- → Repository ready for GitHub upload and Home Assistant integration
-
-### WebSocket Connection Optimization
-- The application currently shows rapid WebSocket connections/disconnections
-- This is normal in development but should be optimized for production
-- Consider implementing connection pooling and reconnection logic
-
-## GitHub Integration Status
-The repository now includes all necessary files for Home Assistant add-on distribution:
-- Home Assistant add-on configuration (config.yaml)
-- Multi-architecture Docker support (Dockerfile, build.yaml)
-- Complete documentation and licensing
-- Production build system
-- Clean file structure without development artifacts
+### Production Considerations
+- **Database Requirement**: PostgreSQL database required for production deployment
+- **Session Management**: Secure session handling with proper cookie configuration
+- **Error Handling**: Comprehensive error boundaries and graceful degradation
+- **Performance Optimization**: Build-time optimizations and efficient bundle splitting

@@ -1,0 +1,4 @@
+name: "HLK2450 Sense360 Configurator Repository"
+description: "Home Assistant add-on repository for HLK2450 mmWave sensor configuration tools"
+url: "https://github.com/wifispray/HLKSense360Configurator"
+maintainer: "wifispray"
