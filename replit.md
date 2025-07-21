@@ -84,8 +84,16 @@ HLKSense360Configurator/         # GitHub repository root
 ✅ **Documentation**: Complete README and installation guides
 ✅ **Build System**: Production-ready build configuration
 ✅ **GitHub Integration**: Repository URL configured for nmcrae85/HLKSense360Configurator
+✅ **Automated Versioning**: GitHub Actions automatically reads version from config.yaml
 
 The add-on is ready for installation via Home Assistant add-on store using:
 `https://github.com/nmcrae85/HLKSense360Configurator`
 
 **Important**: In Replit, files are duplicated at root for development. On GitHub, only the `hlk2450-configurator/` subdirectory structure is used.
+
+## Release Process
+
+1. **Update version**: Edit `hlk2450-configurator/config.yaml` (single source of truth)
+2. **Update CHANGELOG**: Document all changes in `hlk2450-configurator/CHANGELOG.md`
+3. **Commit & Push**: GitHub Actions automatically builds with the new version
+4. **Use script**: Run `./scripts/bump-version.sh [major|minor|patch]` for automated version bumps
