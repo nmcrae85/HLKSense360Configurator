@@ -27,27 +27,44 @@ Preferred communication style: Simple, everyday language.
 - Home Assistant add-on integration
 - Multi-architecture Docker support
 
-## Final Repository Structure
+## Repository Structure Requirements
 
-The repository is now properly structured for Home Assistant add-on compliance:
+**IMPORTANT**: The current structure needs reorganization for Home Assistant add-on compliance.
 
+### Current Structure (Incorrect):
+All files are at the repository root level, which won't work for Home Assistant add-ons.
+
+### Required Structure for Home Assistant:
 ```
-HLKSense360Configurator/
+HLKSense360Configurator/         # GitHub repository root
 ├── README.md                    # Repository overview
-├── repository.yaml              # HA repository config
+├── repository.yaml              # HA repository config (updated to nmcrae85)
 ├── LICENSE                      # MIT license
-└── hlk2450-configurator/       # Main add-on directory
-    ├── config.yaml             # Add-on configuration
-    ├── Dockerfile              # Multi-arch container
-    ├── build.yaml              # Build configuration
-    ├── README.md               # Add-on documentation
-    ├── CHANGELOG.md            # Version history
-    ├── package.json            # Dependencies
-    ├── client/                 # React frontend
-    ├── server/                 # Express backend
-    ├── shared/                 # Type definitions
-    └── scripts/                # Build scripts
+└── hlk2450-configurator/        # Add-on folder (MUST be subdirectory)
+    ├── config.yaml              # Add-on configuration
+    ├── Dockerfile               # Multi-arch container
+    ├── build.yaml               # Build configuration
+    ├── README.md                # Add-on documentation
+    ├── CHANGELOG.md             # Version history
+    ├── package.json             # Dependencies
+    ├── client/                  # React frontend
+    ├── server/                  # Express backend
+    ├── shared/                  # Type definitions
+    └── scripts/                 # Build scripts
 ```
+
+### To Fix:
+1. Create `hlk2450-configurator` subdirectory in GitHub repo
+2. Move all app files into that subdirectory
+3. Keep only `README.md`, `repository.yaml`, and `LICENSE` at root
+4. Update paths in GitHub Actions workflows
+
+### Recent Changes (July 21, 2025):
+- Fixed WebSocket connection spam by improving error handling
+- Cleaned up duplicate hlk2450-configurator directory
+- Updated repository URL from wifispray to nmcrae85
+- Fixed module import paths (changed from @shared to relative imports)
+- Added proper TypeScript configuration (tsconfig.json)
 
 ## Deployment Status
 

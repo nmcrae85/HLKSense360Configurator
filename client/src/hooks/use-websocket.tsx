@@ -59,13 +59,20 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         }
       };
 
-      wsRef.current.onclose = () => {
+      wsRef.current.onclose = (event) => {
         setConnectionStatus('disconnected');
         onDisconnect?.();
+
+        // Don't reconnect if server closed the connection immediately (likely a path issue)
+        if (event.code === 1006 && reconnectAttemptsRef.current > 0) {
+          console.error('WebSocket closed abnormally - stopping reconnection attempts');
+          return;
+        }
 
         // Attempt reconnection if not manually closed
         if (!isManuallyClosedRef.current && reconnectAttemptsRef.current < maxReconnectAttempts) {
           reconnectAttemptsRef.current++;
+          console.log(`Reconnecting in ${reconnectInterval}ms (attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts})`);
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
           }, reconnectInterval);

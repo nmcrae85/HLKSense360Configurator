@@ -38,6 +38,14 @@ app.use((req, res, next) => {
 
 (async () => {
   const server = await registerRoutes(app);
+  
+  // Setup WebSocket upgrade handler to prevent Vite from intercepting
+  server.on('upgrade', (request, socket, head) => {
+    if (request.url === '/ws') {
+      // WebSocket upgrade is handled by the WebSocketServer in routes.ts
+      return;
+    }
+  });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
