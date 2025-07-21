@@ -92,26 +92,44 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // Serve static files in production
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const distPath = path.resolve(__dirname, "..", "..", "dist", "public");
+// Try multiple possible locations for static files
+const possiblePaths = [
+  path.join(process.cwd(), 'dist', 'public'),  // Docker: /app/dist/public
+  path.join(process.cwd(), '..', 'dist', 'public'),  // Local development
+  path.join(__dirname, 'public'),  // Same directory as script
+  '/app/dist/public'  // Explicit Docker path
+];
 
-if (!fs.existsSync(distPath)) {
-  log(`Warning: Could not find build directory: ${distPath}`);
-  // Try alternative path
-  const altPath = path.resolve(__dirname, "..", "client", "dist");
-  if (fs.existsSync(altPath)) {
-    app.use(express.static(altPath));
-    app.use("*", (req, res) => {
-      res.sendFile(path.join(altPath, "index.html"));
-    });
+let staticPath = null;
+for (const testPath of possiblePaths) {
+  if (fs.existsSync(testPath)) {
+    staticPath = testPath;
+    break;
   }
-} else {
-  // Serve static files from the build directory
-  app.use(express.static(distPath));
+}
+
+if (staticPath) {
+  log(`Serving static files from: ${staticPath}`);
+  app.use(express.static(staticPath));
   
   // Fallback to index.html for client-side routing
   app.use("*", (req, res) => {
-    res.sendFile(path.join(distPath, "index.html"));
+    const indexPath = path.join(staticPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send("Index.html not found");
+    }
+  });
+} else {
+  log(`ERROR: Could not find static files in any of: ${possiblePaths.join(', ')}`);
+  app.use("*", (req, res) => {
+    res.status(500).json({ 
+      error: "Static files not found",
+      tried: possiblePaths,
+      cwd: process.cwd(),
+      dirname: __dirname
+    });
   });
 }
 
