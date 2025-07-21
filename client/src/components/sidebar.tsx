@@ -206,7 +206,6 @@ export function Sidebar({
                       <Switch
                         checked={zone.enabled}
                         onCheckedChange={(enabled) => handleZoneToggle(zone.id, enabled)}
-                        size="sm"
                       />
                       <Button
                         variant="ghost"

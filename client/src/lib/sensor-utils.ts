@@ -165,6 +165,11 @@ export class SensorUtils {
     };
   }
 
+  // Sanitize names for file/config usage
+  static sanitizeName(name: string): string {
+    return name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  }
+
   // Check if two zones overlap
   static zonesOverlap(zone1: Zone, zone2: Zone): boolean {
     // Simple bounding box check first

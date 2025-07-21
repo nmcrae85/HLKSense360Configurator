@@ -16,7 +16,6 @@ import {
   Zone, 
   ViewMode, 
   Target,
-  type SensorConfigurationRecord 
 } from '@/types/sensor';
 
 export default function Home() {
@@ -454,7 +453,7 @@ export default function Home() {
         isOpen={yamlModalOpen}
         onClose={() => setYamlModalOpen(false)}
         configuration={configuration}
-        onExport={(advanced) => exportYAMLMutation.mutate(advanced)}
+        onExport={(advanced: boolean) => exportYAMLMutation.mutate(advanced)}
         isExporting={exportYAMLMutation.isPending}
       />
     </div>
