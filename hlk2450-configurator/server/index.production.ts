@@ -96,7 +96,6 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 const possiblePaths = [
   path.join(process.cwd(), 'dist', 'public'),  // Docker: /app/dist/public
   path.join(process.cwd(), '..', 'dist', 'public'),  // Local development
-  path.join(__dirname, 'public'),  // Same directory as script
   '/app/dist/public'  // Explicit Docker path
 ];
 
@@ -127,8 +126,7 @@ if (staticPath) {
     res.status(500).json({ 
       error: "Static files not found",
       tried: possiblePaths,
-      cwd: process.cwd(),
-      dirname: __dirname
+      cwd: process.cwd()
     });
   });
 }
