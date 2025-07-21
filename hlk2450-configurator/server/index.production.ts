@@ -92,12 +92,13 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // Serve static files in production
-const distPath = path.resolve(import.meta.dirname, "..", "..", "dist", "public");
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const distPath = path.resolve(__dirname, "..", "..", "dist", "public");
 
 if (!fs.existsSync(distPath)) {
   log(`Warning: Could not find build directory: ${distPath}`);
   // Try alternative path
-  const altPath = path.resolve(import.meta.dirname, "..", "client", "dist");
+  const altPath = path.resolve(__dirname, "..", "client", "dist");
   if (fs.existsSync(altPath)) {
     app.use(express.static(altPath));
     app.use("*", (req, res) => {

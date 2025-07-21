@@ -37,5 +37,5 @@ LABEL \
     io.hass.type="addon" \
     io.hass.version="1.0.0"
 
-# Start the application
-CMD ["npm", "start"]
+# Start the application with production script
+CMD ["node", "dist/index.production.js"]

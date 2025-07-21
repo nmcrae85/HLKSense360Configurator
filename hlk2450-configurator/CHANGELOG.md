@@ -12,15 +12,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created separate production entry point (index.production.ts) to exclude development dependencies
 - Updated build process to use production-specific entry point
 - Fixed Docker container startup errors related to missing Vite package
+- Fixed path resolution error in production build (import.meta.dirname undefined)
+- Updated Dockerfile to directly run index.production.js instead of npm start
+- Fixed GitHub Actions workflow to build correct version tag (1.0.1)
 
 ### Changed
 - Repository owner updated from 'wifispray' to 'nmcrae85' in all configuration files
 - Updated GitHub Actions workflow to use Personal Access Token (CR_PAT) for authentication
 - Improved WebSocket error handling to reduce connection spam in logs
+- Modified package.json scripts to use production-specific entry point
+- Changed Dockerfile CMD to bypass npm start and run production file directly
 
 ### Added
 - Created dedicated logger module for consistent logging across environments
 - Added production-specific server configuration without development dependencies
+- Added __dirname workaround for ES modules in production environment
 
 ## [1.0.0] - 2025-01-20
 

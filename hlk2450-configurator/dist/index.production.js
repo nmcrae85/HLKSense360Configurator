@@ -1149,10 +1149,11 @@ app.use((err, _req, res, _next) => {
   res.status(status).json({ message });
   throw err;
 });
-var distPath = path.resolve(import.meta.dirname, "..", "..", "dist", "public");
+var __dirname = path.dirname(new URL(import.meta.url).pathname);
+var distPath = path.resolve(__dirname, "..", "..", "dist", "public");
 if (!fs.existsSync(distPath)) {
   log(`Warning: Could not find build directory: ${distPath}`);
-  const altPath = path.resolve(import.meta.dirname, "..", "client", "dist");
+  const altPath = path.resolve(__dirname, "..", "client", "dist");
   if (fs.existsSync(altPath)) {
     app.use(express.static(altPath));
     app.use("*", (req, res) => {
