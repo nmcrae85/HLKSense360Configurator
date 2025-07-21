@@ -10,14 +10,17 @@ WORKDIR /app
 # Copy package files first for better Docker layer caching
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install all dependencies (including devDependencies for build)
+RUN npm ci
 
 # Copy all application files
 COPY . .
 
 # Build the application
 RUN npm run build
+
+# Remove devDependencies to reduce image size
+RUN npm prune --production
 
 # Expose the port
 EXPOSE 5000
