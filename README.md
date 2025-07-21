@@ -182,4 +182,4 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
 [license-shield]: https://img.shields.io/github/license/YOUR_USERNAME/hlk2450-configurator.svg
 [releases-shield]: https://img.shields.io/github/release/YOUR_USERNAME/hlk2450-configurator.svg
-[releases]: https://github.com/YOUR_USERNAME/hlk2450-configurator/releases
+[releases]: https://github.com/YOUR_USERNAME/hlk2450-configurator/releases# Trigger workflow
