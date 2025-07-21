@@ -109,10 +109,16 @@ for (const testPath of possiblePaths) {
 
 if (staticPath) {
   log(`Serving static files from: ${staticPath}`);
+  
+  // Handle Home Assistant ingress path
+  const ingressPath = process.env.SUPERVISOR_INGRESS_PATH || '';
+  
+  // Serve static files
+  app.use(ingressPath, express.static(staticPath));
   app.use(express.static(staticPath));
   
   // Fallback to index.html for client-side routing
-  app.use("*", (req, res) => {
+  app.get('*', (req, res) => {
     const indexPath = path.join(staticPath, "index.html");
     if (fs.existsSync(indexPath)) {
       res.sendFile(indexPath);

@@ -1149,21 +1149,42 @@ app.use((err, _req, res, _next) => {
   res.status(status).json({ message });
   throw err;
 });
-var __dirname = path.dirname(new URL(import.meta.url).pathname);
-var distPath = path.resolve(__dirname, "..", "..", "dist", "public");
-if (!fs.existsSync(distPath)) {
-  log(`Warning: Could not find build directory: ${distPath}`);
-  const altPath = path.resolve(__dirname, "..", "client", "dist");
-  if (fs.existsSync(altPath)) {
-    app.use(express.static(altPath));
-    app.use("*", (req, res) => {
-      res.sendFile(path.join(altPath, "index.html"));
-    });
+var possiblePaths = [
+  path.join(process.cwd(), "dist", "public"),
+  // Docker: /app/dist/public
+  path.join(process.cwd(), "..", "dist", "public"),
+  // Local development
+  "/app/dist/public"
+  // Explicit Docker path
+];
+var staticPath = null;
+for (const testPath of possiblePaths) {
+  if (fs.existsSync(testPath)) {
+    staticPath = testPath;
+    break;
   }
+}
+if (staticPath) {
+  log(`Serving static files from: ${staticPath}`);
+  const ingressPath = process.env.SUPERVISOR_INGRESS_PATH || "";
+  app.use(ingressPath, express.static(staticPath));
+  app.use(express.static(staticPath));
+  app.get("*", (req, res) => {
+    const indexPath = path.join(staticPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send("Index.html not found");
+    }
+  });
 } else {
-  app.use(express.static(distPath));
+  log(`ERROR: Could not find static files in any of: ${possiblePaths.join(", ")}`);
   app.use("*", (req, res) => {
-    res.sendFile(path.join(distPath, "index.html"));
+    res.status(500).json({
+      error: "Static files not found",
+      tried: possiblePaths,
+      cwd: process.cwd()
+    });
   });
 }
 var PORT = parseInt(process.env.PORT || "5000", 10);

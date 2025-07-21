@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-01-21
+### Fixed
+- Fixed blank page issue in Home Assistant ingress by using relative asset paths
+- Changed Vite base configuration to use relative paths (./)
+- Improved static file serving for Home Assistant ingress compatibility
+- Removed Replit development banner from production builds
+
 ## [1.0.2] - 2025-07-21
 ### Added
 - Automated version synchronization in GitHub Actions workflow
