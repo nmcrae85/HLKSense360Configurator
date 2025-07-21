@@ -6,15 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.3] - 2025-01-21
+### Fixed
+- Fixed blank page issue in Home Assistant ingress by using relative asset paths
+- Changed Vite base configuration to use relative paths (./)
+- Improved static file serving for Home Assistant ingress compatibility
+- Removed Replit development banner from production builds
+- Fixed 404 error in Home Assistant ingress by configuring router with dynamic base path detection
+
+## [1.0.2] - 2025-07-21
 ### Added
 - Automated version synchronization in GitHub Actions workflow
 - Release process documentation
 - Version automatically read from config.yaml for Docker builds
 
-### Fixed (Additional for 1.0.1)
-- Production server now searches multiple paths for static files to work in both Docker and local environments
-- Added explicit Docker path checking (/app/dist/public)
-- Improved error messages when static files cannot be found
+## [1.0.2] - 2025-01-21
+### Fixed
+- Fixed ES module error by removing __dirname usage in production build
+- Production server now successfully starts in Docker containers
+- Simplified static file path resolution to only check valid paths
+- Tested and confirmed working in production environment
 
 ## [1.0.1] - 2025-01-21
 
