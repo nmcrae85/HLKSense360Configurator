@@ -8,7 +8,7 @@
 ![Supports amd64 Architecture][amd64-shield]
 ![Supports armhf Architecture][armhf-shield]
 ![Supports armv7 Architecture][armv7-shield]
-![Supports i386 Architecture][i386-shield] l
+![Supports i386 Architecture][i386-shield]
 
 _Advanced ESPHome add-on for HLK2450 mmWave sensor configuration with real-time visualization and polygon zone creation._
 
@@ -182,4 +182,4 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
 [license-shield]: https://img.shields.io/github/license/YOUR_USERNAME/hlk2450-configurator.svg
 [releases-shield]: https://img.shields.io/github/release/YOUR_USERNAME/hlk2450-configurator.svg
-[releases]: https://github.com/YOUR_USERNAME/hlk2450-configurator/releases# Trigger workflow
+[releases]: https://github.com/YOUR_USERNAME/hlk2450-configurator/releases

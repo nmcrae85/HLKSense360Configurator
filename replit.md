@@ -65,14 +65,27 @@ HLKSense360Configurator/         # GitHub repository root
 - Updated repository URL from wifispray to nmcrae85
 - Fixed module import paths (changed from @shared to relative imports)
 - Added proper TypeScript configuration (tsconfig.json)
+- **Reorganized repository structure for Home Assistant compliance**:
+  - Created `hlk2450-configurator/` subdirectory with all add-on files
+  - Kept only README.md, LICENSE, repository.yaml, and .github/ at root
+  - Note: Files duplicated in Replit root for development compatibility
+- **Fixed Docker image path in config.yaml**: Changed from `ghcr.io/wifispray/...` to `ghcr.io/nmcrae85/...`
+- **Updated GitHub Actions workflow**: Now uses Personal Access Token (CR_PAT) for authentication
+- **Fixed production build error (v1.0.1)**:
+  - Created separate production entry point (`index.production.ts`) without Vite imports
+  - Updated build process to use production-specific entry point
+  - Created dedicated logger module for consistent logging
+  - Added CHANGELOG.md for version control tracking
 
 ## Deployment Status
 
-✅ **Repository Structure**: Compliant with Home Assistant add-on standards
+✅ **Repository Structure**: Reorganized and compliant with Home Assistant add-on standards
 ✅ **Container Configuration**: Multi-architecture Docker support
 ✅ **Documentation**: Complete README and installation guides
 ✅ **Build System**: Production-ready build configuration
-✅ **GitHub Integration**: Repository URL configured for wifispray/HLKSense360Configurator
+✅ **GitHub Integration**: Repository URL configured for nmcrae85/HLKSense360Configurator
 
 The add-on is ready for installation via Home Assistant add-on store using:
-`https://github.com/wifispray/HLKSense360Configurator`
+`https://github.com/nmcrae85/HLKSense360Configurator`
+
+**Important**: In Replit, files are duplicated at root for development. On GitHub, only the `hlk2450-configurator/` subdirectory structure is used.
