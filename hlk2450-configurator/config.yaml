@@ -33,4 +33,4 @@ schema:
   ssl: bool
   certfile: str
   keyfile: str
-image: "ghcr.io/wifispray/hlk2450-configurator-{arch}"
+image: "ghcr.io/nmcrae85/hlk2450-configurator-{arch}"
