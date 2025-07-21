@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { WebSocketMessage } from '@/types/sensor';
+import { WebSocketMessage } from '../types/sensor';
 
 export interface UseWebSocketOptions {
   onMessage?: (message: WebSocketMessage) => void;
@@ -16,8 +16,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     onConnect,
     onDisconnect,
     onError,
-    reconnectInterval = 3000,
-    maxReconnectAttempts = 5,
+    reconnectInterval = 5000,
+    maxReconnectAttempts = 3,
   } = options;
 
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');

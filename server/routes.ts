@@ -10,7 +10,7 @@ import {
   insertPresetConfigurationSchema,
   webSocketMessageSchema,
   type WebSocketMessage 
-} from "@shared/schema";
+} from "../shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -28,6 +28,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('WebSocket client connected');
     connectedClients.add(ws);
 
+    // Setup ping/pong to keep connection alive
+    let isAlive = true;
+    ws.on('pong', () => {
+      isAlive = true;
+    });
+
+    const pingInterval = setInterval(() => {
+      if (!isAlive) {
+        ws.terminate();
+        return;
+      }
+      isAlive = false;
+      ws.ping();
+    }, 30000);
+
     // Send initial sensor status to new client
     const sensors = sensorService.getConnectedSensors();
     sensors.forEach(sensor => {
@@ -41,11 +56,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     ws.on('close', () => {
       console.log('WebSocket client disconnected');
+      clearInterval(pingInterval);
       connectedClients.delete(ws);
     });
 
     ws.on('error', (error) => {
       console.error('WebSocket error:', error);
+      clearInterval(pingInterval);
       connectedClients.delete(ws);
     });
   });
