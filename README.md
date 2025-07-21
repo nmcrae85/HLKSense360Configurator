@@ -57,7 +57,7 @@ HLKSense360Configurator/
 
 1. Navigate in your Home Assistant frontend to **Settings** → **Add-ons** → **Add-on Store**
 2. Click the 3-dots menu at top right and select **Repositories**
-3. Add this repository URL: `https://github.com/wifispray/HLKSense360Configurator`
+3. Add this repository URL: `https://github.com/nmcrae85/HLKSense360Configurator`
 4. Find "HLK2450 mmWave Sensor Configurator" and click **Install**
 5. Start the add-on
 
@@ -200,9 +200,9 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
-[commits-shield]: https://img.shields.io/github/commit-activity/y/wifispray/HLKSense360Configurator.svg
-[commits]: https://github.com/wifispray/HLKSense360Configurator/commits/main
+[commits-shield]: https://img.shields.io/github/commit-activity/y/nmcrae85/HLKSense360Configurator.svg
+[commits]: https://github.com/nmcrae85/HLKSense360Configurator/commits/main
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
-[license-shield]: https://img.shields.io/github/license/wifispray/HLKSense360Configurator.svg
-[releases-shield]: https://img.shields.io/github/release/wifispray/HLKSense360Configurator.svg
-[releases]: https://github.com/wifispray/HLKSense360Configurator/releases
+[license-shield]: https://img.shields.io/github/license/nmcrae85/HLKSense360Configurator.svg
+[releases-shield]: https://img.shields.io/github/release/nmcrae85/HLKSense360Configurator.svg
+[releases]: https://github.com/nmcrae85/HLKSense360Configurator/releases

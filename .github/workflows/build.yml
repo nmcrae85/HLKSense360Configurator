@@ -15,7 +15,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: wifispray/hlk2450-configurator
+  IMAGE_NAME: nmcrae85/hlk2450-configurator
 
 jobs:
   build:
