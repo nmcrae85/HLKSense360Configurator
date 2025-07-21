@@ -1,19 +1,45 @@
-# Docker Production Build Fix Summary
+# ✅ DOCKER PRODUCTION BUILD FIXED
 
-## Issue:
-The Docker container was failing with `Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite'` because the production build was trying to import Vite, which is a development dependency.
+## What Was Fixed:
+- **Removed __dirname** - ES modules don't support __dirname
+- **Simplified paths** - Now checks only valid Docker/local paths
+- **Tested locally** - Production server now starts without errors
 
-## Solution:
-1. Created a separate `logger.ts` file to extract the logging functionality
-2. Modified `server/index.ts` to:
-   - Import the logger function from the new file
-   - Use dynamic import for Vite only in development mode
-   - Handle static file serving manually in production
+## GitHub Actions Build Status:
+Looking at your attached build log, GitHub Actions is successfully building your images:
+- ✅ Build process started
+- ✅ Multi-architecture support configured
+- ✅ Using correct repository: nmcrae85/HLKSense360Configurator
 
-## Changes Made:
-- Created `server/logger.ts` and `hlk2450-configurator/server/logger.ts`
-- Updated both `server/index.ts` files to conditionally import Vite
-- Fixed production static file serving to use Express.static
+## Next Steps:
 
-## Result:
-The production Docker build should now work correctly without requiring Vite as a production dependency. The app will serve the built client files from the `client/dist` directory in production mode.
+### 1. Commit and Push the Fix:
+```bash
+git add .
+git commit -m "Fix: Remove __dirname from ES module production build"
+git push
+```
+
+### 2. Monitor GitHub Actions:
+Go to: https://github.com/nmcrae85/HLKSense360Configurator/actions
+- Wait for build to complete (all green checkmarks)
+- Should take 5-10 minutes
+
+### 3. Force Home Assistant to Use New Images:
+```bash
+# SSH into Home Assistant
+docker images | grep hlk2450
+docker rmi -f [image IDs]  # Force remove old images
+
+# In HA UI:
+# 1. Uninstall add-on
+# 2. Supervisor → Add-on Store → ⋮ → Reload
+# 3. Install fresh
+```
+
+## Why This Will Work Now:
+1. **No more ES module errors** - Removed incompatible __dirname
+2. **Proper path resolution** - Uses process.cwd() for Docker compatibility
+3. **Tested production build** - Runs without errors locally
+
+The production server is now ES module compliant and will work in your Docker containers!
