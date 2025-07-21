@@ -1,14 +1,13 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base:15.0.7
+ARG BUILD_FROM=ghcr.io/hassio-addons/base-nodejs:0.2.3
 FROM $BUILD_FROM
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Install Node.js and dependencies
+# Install additional dependencies
 RUN apk add --no-cache \
-    nodejs \
-    npm \
     python3 \
+    py3-pip \
     make \
     g++ \
     git
@@ -40,7 +39,7 @@ EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000 || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:5000 || exit 1
 
 # Labels
 LABEL \
