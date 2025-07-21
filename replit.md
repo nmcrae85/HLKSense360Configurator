@@ -86,3 +86,30 @@ The build process creates a production-ready Express server that serves static a
 - `db:push`: Applies database schema changes using Drizzle
 
 The application is designed to work seamlessly in both development and production environments with automatic fallbacks and environment-specific configurations.
+
+## Recent Changes
+
+### 2025-01-21 - Repository Cleanup and GitHub Preparation
+- ✓ Created complete Home Assistant add-on structure
+- ✓ Added production Dockerfile with Node.js runtime
+- ✓ Created config.yaml for Home Assistant add-on store
+- ✓ Added comprehensive README.md with installation instructions
+- ✓ Implemented .gitignore for clean repository
+- ✓ Added CHANGELOG.md and LICENSE files
+- ✓ Removed development-only files (attached_assets, .replit)
+- ✓ Created build script for production deployment
+- ✓ Fixed TypeScript errors for production readiness
+- → Repository ready for GitHub upload and Home Assistant integration
+
+### WebSocket Connection Optimization
+- The application currently shows rapid WebSocket connections/disconnections
+- This is normal in development but should be optimized for production
+- Consider implementing connection pooling and reconnection logic
+
+## GitHub Integration Status
+The repository now includes all necessary files for Home Assistant add-on distribution:
+- Home Assistant add-on configuration (config.yaml)
+- Multi-architecture Docker support (Dockerfile, build.yaml)
+- Complete documentation and licensing
+- Production build system
+- Clean file structure without development artifacts

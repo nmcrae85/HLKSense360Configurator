@@ -1,0 +1,16 @@
+build_from:
+  aarch64: "ghcr.io/hassio-addons/base:15.0.7"
+  amd64: "ghcr.io/hassio-addons/base:15.0.7"
+  armhf: "ghcr.io/hassio-addons/base:15.0.7"
+  armv7: "ghcr.io/hassio-addons/base:15.0.7"
+  i386: "ghcr.io/hassio-addons/base:15.0.7"
+codenotary:
+  signer: notary@home-assistant.io
+  base_image: notary@home-assistant.io
+labels:
+  org.opencontainers.image.title: "HLK2450 mmWave Sensor Configurator"
+  org.opencontainers.image.description: "Advanced ESPHome add-on for HLK2450 mmWave sensor configuration with real-time visualization and polygon zone creation"
+  org.opencontainers.image.source: "https://github.com/[YOUR_USERNAME]/hlk2450-configurator"
+  org.opencontainers.image.licenses: "MIT"
+args:
+  TEMPIO_VERSION: "2023.01.0"
