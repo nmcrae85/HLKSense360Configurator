@@ -6,10 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.2] - 2025-07-21
 ### Added
 - Automated version synchronization in GitHub Actions workflow
 - Release process documentation
 - Version automatically read from config.yaml for Docker builds
+
+## [1.0.2] - 2025-01-21
+### Fixed
+- Fixed ES module error by removing __dirname usage in production build
+- Production server now successfully starts in Docker containers
+- Simplified static file path resolution to only check valid paths
+- Tested and confirmed working in production environment
 
 ## [1.0.1] - 2025-01-21
 
