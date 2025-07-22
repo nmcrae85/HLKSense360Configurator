@@ -117,13 +117,25 @@ if (staticPath) {
   app.use(ingressPath, express.static(staticPath));
   app.use(express.static(staticPath));
   
-  // Fallback to index.html for client-side routing
+  // Fallback to index.html for client-side routing (including ingress paths)
   app.get('*', (req, res) => {
-    const indexPath = path.join(staticPath, "index.html");
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
+    // Check if this is an ingress path request
+    if (req.path.includes('/hassio/ingress/')) {
+      // For ingress paths, always serve index.html for the SPA to handle routing
+      const indexPath = path.join(staticPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send("Index.html not found");
+      }
     } else {
-      res.status(404).send("Index.html not found");
+      // Normal SPA fallback
+      const indexPath = path.join(staticPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send("Index.html not found");
+      }
     }
   });
 } else {
