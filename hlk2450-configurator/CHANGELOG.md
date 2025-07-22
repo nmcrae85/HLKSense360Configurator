@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed Replit development banner from production builds
 - Fixed 404 error in Home Assistant ingress by configuring router with dynamic base path detection
 - Updated server to properly serve SPA for ingress URLs (/hassio/ingress/*)
+- Fixed deep route navigation by implementing custom location hook for wouter router
 
 ## [1.0.2] - 2025-07-21
 ### Added
