@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed Vite base configuration to use relative paths (./)
 - Improved static file serving for Home Assistant ingress compatibility
 - Removed Replit development banner from production builds
+- Fixed 404 error in Home Assistant ingress by configuring router with dynamic base path detection
+- Updated server to properly serve SPA for ingress URLs (/hassio/ingress/*)
 
 ## [1.0.2] - 2025-07-21
 ### Added
