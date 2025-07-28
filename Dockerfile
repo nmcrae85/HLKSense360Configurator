@@ -46,4 +46,6 @@ COPY run.sh .
 RUN chmod +x run.sh
 
 # Start the application with run script
-CMD ["/app/run.sh"]
+# TEMPORARY: Using test server to debug ingress
+CMD ["node", "test-server.js"]
+# Production: CMD ["/app/run.sh"]

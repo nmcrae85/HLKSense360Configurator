@@ -8,6 +8,12 @@ echo "  NODE_ENV=${NODE_ENV}"
 echo "  PORT=${PORT}"
 echo "  PWD=$(pwd)"
 echo "  Ingress path: ${SUPERVISOR_INGRESS_PATH:-not set}"
+echo "  Ingress port: ${SUPERVISOR_INGRESS_PORT:-not set}"
+
+# Debug network
+echo "Network configuration:"
+ip addr show 2>/dev/null || echo "ip command not available"
+echo "Listening on all interfaces (0.0.0.0:5000)"
 
 # Check if built files exist
 if [ ! -f "dist/index.production.js" ]; then
@@ -20,5 +26,5 @@ if [ ! -d "dist/public" ]; then
     exit 1
 fi
 
-echo "Starting server..."
+echo "Starting server on 0.0.0.0:5000..."
 exec node dist/index.production.js

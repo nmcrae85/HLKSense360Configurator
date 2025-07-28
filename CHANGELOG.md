@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2025-01-28
+### Added
+- Test server for debugging ingress connectivity issues
+- Enhanced network debugging in run.sh startup script
+- Nginx ingress configuration file for better proxy handling
+- Comprehensive troubleshooting guide (CRITICAL_FIX.md)
+
+### Changed
+- Temporarily using test server to diagnose blank screen issue
+- Version bump to force rebuild in Home Assistant
+
+### Fixed
+- Attempting to resolve ingress proxy not reaching add-on
+
 ## [1.0.3] - 2025-01-21
 ### Fixed
 - Fixed blank page issue in Home Assistant ingress by using relative asset paths
