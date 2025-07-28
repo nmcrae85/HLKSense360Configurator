@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved static file serving for Home Assistant ingress compatibility
 - Removed Replit development banner from production builds
 - Fixed 404 error in Home Assistant ingress by configuring router with dynamic base path detection
+- Updated server to properly serve SPA for ingress URLs (/hassio/ingress/*)
+- Fixed deep route navigation with custom location hook that properly strips ingress base path
+- Added interval-based location monitoring to handle all navigation scenarios
+- Added health check endpoint (/health) for ingress diagnostics
+- Added run.sh startup script with enhanced logging for troubleshooting
+- Set proper NODE_ENV and PORT environment variables in Dockerfile
+- Added ingress_entry configuration to config.yaml
 
 ## [1.0.2] - 2025-07-21
 ### Added
