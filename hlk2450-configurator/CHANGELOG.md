@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.12] - 2025-01-29
+### Fixed
+- Corrected Docker image reference in config.yaml
+- Removed architecture suffix from image name for proper multi-arch support
+- Home Assistant will now pull the correct manifest image
+
+## [1.0.11] - 2025-01-29
+### Fixed
+- Force update to ensure GitHub uses correct Dockerfile
+- Confirmed removal of non-existent client/public directory
+- Added comment to mark the change clearly
+
 ## [1.0.10] - 2025-01-29
 ### Fixed
 - Removed non-existent client/public directory from Dockerfile
