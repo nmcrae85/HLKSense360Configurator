@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2025-01-29
+### Fixed
+- Completely rewrote Dockerfile to eliminate all build errors
+- Removed all npm install and build steps for test server
+- Test server now runs directly without any dependencies
+
 ## [1.0.4] - 2025-01-28
 ### Added
 - Test server for debugging ingress connectivity issues
