@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // Simple test server to verify ingress works
 const http = require('http');
 

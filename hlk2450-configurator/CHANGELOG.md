@@ -17,9 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Temporarily using test server to diagnose blank screen issue
 - Version bump to force rebuild in Home Assistant
+- Temporarily disabled npm build step to run test server
 
 ### Fixed
 - Attempting to resolve ingress proxy not reaching add-on
+- Fixed build error by temporarily skipping build for test server
 
 ## [1.0.3] - 2025-01-21
 ### Fixed
