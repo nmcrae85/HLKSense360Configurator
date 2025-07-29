@@ -60,7 +60,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.11"
+    io.hass.version="1.0.12"
 
 # Start the server with the correct path
 CMD ["node", "dist/index.production.js"]
