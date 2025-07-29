@@ -1,6 +1,6 @@
 name: "HLK2450 mmWave Sensor Configurator"
 description: "Advanced ESPHome add-on for HLK2450 mmWave sensor configuration with real-time visualization and polygon zone creation"
-version: "1.0.5"
+version: "1.0.6"
 # Trigger workflow build
 slug: "hlk2450-configurator"
 init: false

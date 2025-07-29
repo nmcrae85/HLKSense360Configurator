@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2025-01-29
+### Fixed
+- Implemented multi-stage Docker build to properly handle devDependencies
+- Fixed "vite: not found" error in GitHub Actions build
+- Added explicit npx commands to ensure local binaries are used
+- Separated builder stage (with devDependencies) from runner stage (production only)
+
+### Changed
+- Dockerfile now uses multi-stage build pattern for optimal image size
+- Build scripts use npx to ensure local vite and esbuild binaries are found
+- Production runtime only includes necessary dependencies
+
 ## [1.0.5] - 2025-01-29
 ### Fixed
 - Completely rewrote Dockerfile to eliminate all build errors

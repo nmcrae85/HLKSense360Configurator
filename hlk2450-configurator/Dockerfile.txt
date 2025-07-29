@@ -1,37 +1,52 @@
-# Use Node.js official Alpine image
-FROM node:18-alpine
-
-# Install bash and other required packages
-RUN apk add --no-cache bash curl
-
-# Set working directory
+# ---- builder ----
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Set environment variables for Home Assistant
+# System tools needed during build
+RUN apk add --no-cache bash curl
+
+# Install deps (including devDependencies)
+COPY package*.json ./
+RUN npm ci --include=dev
+
+# Copy source
+COPY . .
+
+# Build both client (Vite) and server (esbuild) using local binaries via npx
+RUN npx vite build && \
+    npx esbuild server/index.production.ts \
+      --platform=node \
+      --packages=external \
+      --bundle \
+      --format=esm \
+      --outdir=dist \
+      --out-extension:.js=.js
+
+# ---- runner ----
+FROM node:18-alpine AS runner
+WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Copy package files first for better Docker layer caching
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
+# Install only production deps for runtime
 COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Install all dependencies (including devDependencies for build)
-RUN npm ci
+# Copy built artifacts
+COPY --from=builder /app/dist ./dist
 
-# Copy all application files
-COPY . .
-
-# TEMPORARY: Skip build for test server
-# RUN npm run build
-
-# Remove devDependencies to reduce image size (also skip for now)
-# RUN npm prune --production
+# If the app needs any non-built assets (e.g., public/), copy them too:
+COPY --from=builder /app/client/public ./public
 
 # Expose the port
 EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000 || exit 1
+    CMD curl -f http://localhost:5000/health || exit 1
 
 # Labels for Home Assistant
 LABEL \
@@ -39,13 +54,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.0"
+    io.hass.version="1.0.6"
 
-# Make run script executable
-COPY run.sh .
-RUN chmod +x run.sh
-
-# Start the application with run script
-# TEMPORARY: Using test server to debug ingress
-CMD ["node", "test-server.js"]
-# Production: CMD ["/app/run.sh"]
+# Container runtime - adjusted path for the compiled server file
+CMD ["node", "dist/index.production.js"]
