@@ -1,37 +1,60 @@
-# Use Node.js official Alpine image
-FROM node:18-alpine
+# ---------- builder ----------
+FROM node:18-alpine AS builder
 
-# Install bash and other required packages
-RUN apk add --no-cache bash curl
+# Install required system packages
+RUN apk add --no-cache bash curl git python3 make g++
 
 # Set working directory
 WORKDIR /app
 
-# Set environment variables for Home Assistant
-ENV NODE_ENV=production
-ENV PORT=5000
+# Copy package files
+COPY package.json package-lock.json ./
 
-# Copy package files first for better Docker layer caching
-COPY package*.json ./
+# Install all dependencies including devDependencies
+RUN npm ci --include=dev
 
-# Install all dependencies (including devDependencies for build)
-RUN npm ci
+# CRITICAL: Make binaries executable and add to PATH
+RUN chmod +x ./node_modules/.bin/*
+ENV PATH="/app/node_modules/.bin:$PATH"
 
-# Copy all application files
+# Verify binaries are accessible
+RUN echo "Checking vite and esbuild installation:" && \
+    ls -la ./node_modules/.bin/vite ./node_modules/.bin/esbuild && \
+    ./node_modules/.bin/vite --version && \
+    ./node_modules/.bin/esbuild --version
+
+# Copy all source files
 COPY . .
 
 # Build the application
 RUN npm run build
 
-# Remove devDependencies to reduce image size
-RUN npm prune --production
+# Verify build output exists
+RUN test -f dist/index.production.js || (echo "Build failed: dist/index.production.js not found" && exit 1)
+
+# ---------- runtime ----------
+FROM node:18-alpine AS runner
+RUN apk add --no-cache curl
+ENV NODE_ENV=production
+ENV PORT=5000
+WORKDIR /app
+
+# Install ONLY production deps
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+# Copy built artifacts
+COPY --from=builder /app/dist /app/dist
+
+# If the app needs any non-built assets (e.g., public/), copy them too:
+COPY --from=builder /app/client/public /app/public
 
 # Expose the port
 EXPOSE 5000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000 || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s \
+  CMD curl -fsS http://localhost:5000/health || exit 1
 
 # Labels for Home Assistant
 LABEL \
@@ -39,13 +62,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.0"
+    io.hass.version="1.0.9"
 
-# Make run script executable
-COPY run.sh .
-RUN chmod +x run.sh
-
-# Start the application with run script
-# TEMPORARY: Using test server to debug ingress
-CMD ["node", "test-server.js"]
-# Production: CMD ["/app/run.sh"]
+# Start the server with the correct path
+CMD ["node", "dist/index.production.js"]
