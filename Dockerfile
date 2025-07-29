@@ -1,51 +1,33 @@
-# Use Node.js official Alpine image
+# TEMPORARY: Simple test Dockerfile to debug ingress
 FROM node:18-alpine
 
-# Install bash and other required packages
-RUN apk add --no-cache bash curl
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
 # Set working directory
 WORKDIR /app
 
-# Set environment variables for Home Assistant
+# Set environment variables
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Copy package files first for better Docker layer caching
-COPY package*.json ./
-
-# Install all dependencies (including devDependencies for build)
-RUN npm ci
-
-# Copy all application files
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Remove devDependencies to reduce image size
-RUN npm prune --production
+# Copy only the test server (no npm install needed)
+COPY test-server.js .
 
 # Expose the port
 EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000 || exit 1
+    CMD curl -f http://localhost:5000/health || exit 1
 
 # Labels for Home Assistant
 LABEL \
     io.hass.name="HLK2450 mmWave Sensor Configurator" \
-    io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
+    io.hass.description="Test server for debugging ingress" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.0"
+    io.hass.version="1.0.4"
 
-# Make run script executable
-COPY run.sh .
-RUN chmod +x run.sh
-
-# Start the application with run script
-# TEMPORARY: Using test server to debug ingress
+# Run test server directly
 CMD ["node", "test-server.js"]
-# Production: CMD ["/app/run.sh"]
