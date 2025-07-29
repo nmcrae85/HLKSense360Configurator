@@ -62,6 +62,16 @@ app.use((req, res, next) => {
 
 const server = http.createServer(app);
 
+// Add diagnostic endpoint for Home Assistant
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    ingress: req.headers['x-ingress-path'] || 'not detected',
+    headers: req.headers,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Setup WebSocket server
 const wss = new WebSocketServer({ server });
 

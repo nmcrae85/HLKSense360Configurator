@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2025-01-28
+### Added
+- Test server for debugging ingress connectivity issues
+- Enhanced network debugging in run.sh startup script
+- Nginx ingress configuration file for better proxy handling
+- Comprehensive troubleshooting guide (CRITICAL_FIX.md)
+
+### Changed
+- Temporarily using test server to diagnose blank screen issue
+- Version bump to force rebuild in Home Assistant
+
+### Fixed
+- Attempting to resolve ingress proxy not reaching add-on
+
 ## [1.0.3] - 2025-01-21
 ### Fixed
 - Fixed blank page issue in Home Assistant ingress by using relative asset paths
@@ -17,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated server to properly serve SPA for ingress URLs (/hassio/ingress/*)
 - Fixed deep route navigation with custom location hook that properly strips ingress base path
 - Added interval-based location monitoring to handle all navigation scenarios
+- Added health check endpoint (/health) for ingress diagnostics
+- Added run.sh startup script with enhanced logging for troubleshooting
+- Set proper NODE_ENV and PORT environment variables in Dockerfile
+- Added ingress_entry configuration to config.yaml
 
 ## [1.0.2] - 2025-07-21
 ### Added

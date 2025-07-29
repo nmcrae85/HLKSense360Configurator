@@ -1130,6 +1130,14 @@ app.use((req, res, next) => {
   next();
 });
 var server = http.createServer(app);
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    ingress: req.headers["x-ingress-path"] || "not detected",
+    headers: req.headers,
+    timestamp: (/* @__PURE__ */ new Date()).toISOString()
+  });
+});
 var wss = new WebSocketServer2({ server });
 wss.on("connection", (ws) => {
   console.log("WebSocket client connected");
@@ -1170,11 +1178,20 @@ if (staticPath) {
   app.use(ingressPath, express.static(staticPath));
   app.use(express.static(staticPath));
   app.get("*", (req, res) => {
-    const indexPath = path.join(staticPath, "index.html");
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
+    if (req.path.includes("/hassio/ingress/")) {
+      const indexPath = path.join(staticPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send("Index.html not found");
+      }
     } else {
-      res.status(404).send("Index.html not found");
+      const indexPath = path.join(staticPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send("Index.html not found");
+      }
     }
   });
 } else {

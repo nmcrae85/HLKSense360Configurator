@@ -7,6 +7,10 @@ RUN apk add --no-cache bash curl
 # Set working directory
 WORKDIR /app
 
+# Set environment variables for Home Assistant
+ENV NODE_ENV=production
+ENV PORT=5000
+
 # Copy package files first for better Docker layer caching
 COPY package*.json ./
 
@@ -37,5 +41,11 @@ LABEL \
     io.hass.type="addon" \
     io.hass.version="1.0.0"
 
-# Start the application with production script
-CMD ["node", "dist/index.production.js"]
+# Make run script executable
+COPY run.sh .
+RUN chmod +x run.sh
+
+# Start the application with run script
+# TEMPORARY: Using test server to debug ingress
+CMD ["node", "test-server.js"]
+# Production: CMD ["/app/run.sh"]
