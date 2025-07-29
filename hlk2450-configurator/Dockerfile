@@ -43,11 +43,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# Copy built artifacts
+# Copy built artifacts (includes dist/public from vite build)
+# FIXED in v1.0.11: Removed client/public copy - directory doesn't exist
 COPY --from=builder /app/dist /app/dist
-
-# If the app needs any non-built assets (e.g., public/), copy them too:
-COPY --from=builder /app/client/public /app/public
 
 # Expose the port
 EXPOSE 5000
@@ -62,7 +60,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.9"
+    io.hass.version="1.0.11"
 
 # Start the server with the correct path
 CMD ["node", "dist/index.production.js"]
