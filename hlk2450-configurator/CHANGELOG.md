@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.9] - 2025-01-29
+### Fixed
+- **CRITICAL FIX**: Set ENV PATH permanently in builder stage to include node_modules/.bin
+- Previously PATH export was only temporary within single RUN command
+- Now vite/esbuild are always found by npm run build
+- Added comprehensive verification steps before build
+
+### Root Cause Analysis
+- Docker RUN commands with `export PATH` only affect that specific command
+- Solution: Use `ENV PATH="/app/node_modules/.bin:$PATH"` to persist across all RUN commands
+- This ensures the shell (/bin/sh in Alpine) always finds vite/esbuild
+
+### Technical Changes
+- Added ENV PATH directive after WORKDIR /app
+- Added version checks for vite and esbuild before build
+- Added `which vite` test to confirm PATH resolution
+- Improved debug output for troubleshooting
+
 ## [1.0.8] - 2025-01-29
 ### Fixed
 - Resolved exit code 127 by adding proper binary permissions and verification

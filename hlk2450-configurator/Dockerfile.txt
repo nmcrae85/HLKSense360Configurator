@@ -4,30 +4,39 @@ FROM node:18-alpine AS builder
 RUN apk add --no-cache bash curl git python3 make g++
 WORKDIR /app
 
+# CRITICAL FIX: Set PATH to include node_modules/.bin for ALL subsequent RUN commands
+ENV PATH="/app/node_modules/.bin:$PATH"
+
 # Install dependencies INCLUDING devDependencies
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 
-# Verify binaries are installed
-RUN ls -la node_modules/.bin/vite node_modules/.bin/esbuild || (echo "BINARIES NOT FOUND" && exit 1)
+# Verify npm install worked and binaries exist
+RUN echo "=== Verifying npm install ===" && \
+    ls -la node_modules/.bin/ | head -20 && \
+    echo "=== Testing vite and esbuild executables ===" && \
+    ls -l ./node_modules/.bin/vite ./node_modules/.bin/esbuild && \
+    chmod +x ./node_modules/.bin/* && \
+    ./node_modules/.bin/vite --version && \
+    ./node_modules/.bin/esbuild --version
 
-# Copy source and build
+# Copy source code
 COPY . .
 
-# Debug: Show current directory and PATH
-RUN echo "Current directory: $(pwd)" && \
+# Debug: Confirm PATH and working directory
+RUN echo "=== Build Environment Debug ===" && \
+    echo "Working directory: $(pwd)" && \
     echo "PATH: $PATH" && \
-    echo "node_modules/.bin contents:" && \
-    ls -la node_modules/.bin/ | head -20
+    echo "Testing direct vite command: $(which vite)" && \
+    vite --version && \
+    esbuild --version
 
-# Build with explicit paths and error checking
-# Use sh -c to ensure proper shell interpretation and PATH setup
-RUN chmod +x ./node_modules/.bin/vite ./node_modules/.bin/esbuild && \
-    export PATH="./node_modules/.bin:$PATH" && \
-    sh -c "vite build && esbuild server/index.production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --out-extension:.js=.js"
+# Run the build with npm run build (which should now find vite/esbuild in PATH)
+RUN echo "=== Running npm run build ===" && \
+    npm run build
 
 # Verify build output
-RUN echo "Build complete. Checking dist contents:" && \
+RUN echo "=== Verifying build output ===" && \
     ls -la dist/ && \
     test -f dist/index.production.js || (echo "BUILD FAILED: dist/index.production.js not found" && exit 1)
 
@@ -61,7 +70,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.8"
+    io.hass.version="1.0.9"
 
 # Start the server with the correct path
 CMD ["node", "dist/index.production.js"]
