@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.10] - 2025-01-29
+### Fixed
+- Removed non-existent client/public directory from Dockerfile
+- Build now completes successfully without cache key error
+- Public assets are already included in dist folder from vite build
+
 ## [1.0.9] - 2025-01-29
 ### Fixed
 - **CRITICAL FIX**: Set ENV PATH permanently in builder stage to include node_modules/.bin

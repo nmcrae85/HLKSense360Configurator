@@ -1,44 +1,36 @@
 # ---------- builder ----------
 FROM node:18-alpine AS builder
+
 # Install required system packages
 RUN apk add --no-cache bash curl git python3 make g++
+
+# Set working directory
 WORKDIR /app
 
-# CRITICAL FIX: Set PATH to include node_modules/.bin for ALL subsequent RUN commands
-ENV PATH="/app/node_modules/.bin:$PATH"
-
-# Install dependencies INCLUDING devDependencies
+# Copy package files
 COPY package.json package-lock.json ./
+
+# Install all dependencies including devDependencies
 RUN npm ci --include=dev
 
-# Verify npm install worked and binaries exist
-RUN echo "=== Verifying npm install ===" && \
-    ls -la node_modules/.bin/ | head -20 && \
-    echo "=== Testing vite and esbuild executables ===" && \
-    ls -l ./node_modules/.bin/vite ./node_modules/.bin/esbuild && \
-    chmod +x ./node_modules/.bin/* && \
+# CRITICAL: Make binaries executable and add to PATH
+RUN chmod +x ./node_modules/.bin/*
+ENV PATH="/app/node_modules/.bin:$PATH"
+
+# Verify binaries are accessible
+RUN echo "Checking vite and esbuild installation:" && \
+    ls -la ./node_modules/.bin/vite ./node_modules/.bin/esbuild && \
     ./node_modules/.bin/vite --version && \
     ./node_modules/.bin/esbuild --version
 
-# Copy source code
+# Copy all source files
 COPY . .
 
-# Debug: Confirm PATH and working directory
-RUN echo "=== Build Environment Debug ===" && \
-    echo "Working directory: $(pwd)" && \
-    echo "PATH: $PATH" && \
-    echo "Testing direct vite command: $(which vite)" && \
-    vite --version && \
-    esbuild --version
+# Build the application
+RUN npm run build
 
-# Run the build with npm run build (which should now find vite/esbuild in PATH)
-RUN echo "=== Running npm run build ===" && \
-    npm run build
-
-# Verify build output
-RUN echo "=== Verifying build output ===" && \
-    ls -la dist/ && \
-    test -f dist/index.production.js || (echo "BUILD FAILED: dist/index.production.js not found" && exit 1)
+# Verify build output exists
+RUN test -f dist/index.production.js || (echo "Build failed: dist/index.production.js not found" && exit 1)
 
 # ---------- runtime ----------
 FROM node:18-alpine AS runner
@@ -51,11 +43,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# Copy built artifacts
+# Copy built artifacts (includes dist/public from vite build)
 COPY --from=builder /app/dist /app/dist
-
-# If the app needs any non-built assets (e.g., public/), copy them too:
-COPY --from=builder /app/client/public /app/public
 
 # Expose the port
 EXPOSE 5000
@@ -70,7 +59,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.9"
+    io.hass.version="1.0.10"
 
 # Start the server with the correct path
 CMD ["node", "dist/index.production.js"]
