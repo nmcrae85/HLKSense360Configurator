@@ -1,19 +1,35 @@
 # ---------- builder ----------
 FROM node:18-alpine AS builder
-RUN apk add --no-cache bash curl
+# Install required system packages
+RUN apk add --no-cache bash curl git python3 make g++
 WORKDIR /app
 
 # Install dependencies INCLUDING devDependencies
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 
+# Verify binaries are installed
+RUN ls -la node_modules/.bin/vite node_modules/.bin/esbuild || (echo "BINARIES NOT FOUND" && exit 1)
+
 # Copy source and build
 COPY . .
-# Use local binaries; do not rely on npx fetching packages
-RUN ./node_modules/.bin/vite build && \
-    ./node_modules/.bin/esbuild server/index.production.ts \
-      --platform=node --packages=external --bundle --format=esm \
-      --outdir=dist --out-extension:.js=.js
+
+# Debug: Show current directory and PATH
+RUN echo "Current directory: $(pwd)" && \
+    echo "PATH: $PATH" && \
+    echo "node_modules/.bin contents:" && \
+    ls -la node_modules/.bin/ | head -20
+
+# Build with explicit paths and error checking
+# Use sh -c to ensure proper shell interpretation and PATH setup
+RUN chmod +x ./node_modules/.bin/vite ./node_modules/.bin/esbuild && \
+    export PATH="./node_modules/.bin:$PATH" && \
+    sh -c "vite build && esbuild server/index.production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --out-extension:.js=.js"
+
+# Verify build output
+RUN echo "Build complete. Checking dist contents:" && \
+    ls -la dist/ && \
+    test -f dist/index.production.js || (echo "BUILD FAILED: dist/index.production.js not found" && exit 1)
 
 # ---------- runtime ----------
 FROM node:18-alpine AS runner
@@ -45,7 +61,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.7"
+    io.hass.version="1.0.8"
 
-# IMPORTANT: Set CMD to the actual built server entry file path
+# Start the server with the correct path
 CMD ["node", "dist/index.production.js"]

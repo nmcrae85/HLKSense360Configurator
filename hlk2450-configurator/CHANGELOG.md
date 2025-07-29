@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.8] - 2025-01-29
+### Fixed
+- Resolved exit code 127 by adding proper binary permissions and verification
+- Added comprehensive debugging and error checking in Docker build
+- Fixed missing system dependencies (python3, make, g++) for native modules
+- Ensured binaries are executable with chmod +x
+- Added build output verification to catch failures early
+
+### Changed
+- Enhanced Dockerfile with debugging steps and verification checks
+- Build scripts now use explicit ./node_modules/.bin/ paths
+- Added system packages required for building native Node.js modules
+
+### Technical Details
+- Exit code 127 was caused by non-executable binaries in Alpine Linux
+- Added chmod +x for vite and esbuild before execution
+- Verified dist/index.production.js exists after build
+
 ## [1.0.7] - 2025-01-29
 ### Fixed
 - Properly implemented multi-stage Docker build with local binaries
