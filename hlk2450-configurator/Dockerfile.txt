@@ -1,52 +1,43 @@
-# ---- builder ----
+# ---------- builder ----------
 FROM node:18-alpine AS builder
+RUN apk add --no-cache bash curl
 WORKDIR /app
 
-# System tools needed during build
-RUN apk add --no-cache bash curl
-
-# Install deps (including devDependencies)
-COPY package*.json ./
+# Install dependencies INCLUDING devDependencies
+COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 
-# Copy source
+# Copy source and build
 COPY . .
+# Use local binaries; do not rely on npx fetching packages
+RUN ./node_modules/.bin/vite build && \
+    ./node_modules/.bin/esbuild server/index.production.ts \
+      --platform=node --packages=external --bundle --format=esm \
+      --outdir=dist --out-extension:.js=.js
 
-# Build both client (Vite) and server (esbuild) using local binaries via npx
-RUN npx vite build && \
-    npx esbuild server/index.production.ts \
-      --platform=node \
-      --packages=external \
-      --bundle \
-      --format=esm \
-      --outdir=dist \
-      --out-extension:.js=.js
-
-# ---- runner ----
+# ---------- runtime ----------
 FROM node:18-alpine AS runner
-WORKDIR /app
+RUN apk add --no-cache curl
 ENV NODE_ENV=production
 ENV PORT=5000
+WORKDIR /app
 
-# Install curl for healthcheck
-RUN apk add --no-cache curl
-
-# Install only production deps for runtime
-COPY package*.json ./
+# Install ONLY production deps
+COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 # Copy built artifacts
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist /app/dist
 
 # If the app needs any non-built assets (e.g., public/), copy them too:
-COPY --from=builder /app/client/public ./public
+COPY --from=builder /app/client/public /app/public
 
 # Expose the port
 EXPOSE 5000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s \
+  CMD curl -fsS http://localhost:5000/health || exit 1
 
 # Labels for Home Assistant
 LABEL \
@@ -54,7 +45,7 @@ LABEL \
     io.hass.description="Advanced ESPHome add-on for HLK2450 mmWave sensor configuration" \
     io.hass.arch="armhf|armv7|aarch64|amd64|i386" \
     io.hass.type="addon" \
-    io.hass.version="1.0.6"
+    io.hass.version="1.0.7"
 
-# Container runtime - adjusted path for the compiled server file
+# IMPORTANT: Set CMD to the actual built server entry file path
 CMD ["node", "dist/index.production.js"]

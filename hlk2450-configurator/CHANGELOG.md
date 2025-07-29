@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.7] - 2025-01-29
+### Fixed
+- Properly implemented multi-stage Docker build with local binaries
+- Fixed ERR_MODULE_NOT_FOUND by using ./node_modules/.bin/ paths
+- Removed npx dependency, using direct local binaries instead
+- Optimized healthcheck timeout for faster startup
+
+### Changed
+- Dockerfile now uses local vite/esbuild binaries from node_modules
+- Reduced image size by properly separating build and runtime stages
+- Added .dockerignore for cleaner build context
+
 ## [1.0.6] - 2025-01-29
 ### Fixed
 - Implemented multi-stage Docker build to properly handle devDependencies
